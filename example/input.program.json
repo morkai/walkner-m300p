@@ -1,0 +1,150 @@
+{
+  "config": {
+    "deviceMac": "00:00:00:00:00:00",
+    "devicePin": "0000",
+    "factoryPassword": "000000",
+    "loginHashSeed": 4294967295,
+    "responseTimeout": 500,
+    "logging": {
+      "error": true,
+      "conn": true,
+      "txrx": false,
+      "reqres": false
+    }
+  },
+  "program": {
+    "nameAndNumber": {
+      "name": "Mini300 Test",
+      "number": 1
+    },
+    "textInfo": "",
+    "serialNumber": "",
+    "config": {
+      "pir": {
+        "onLevel": 95,
+        "dimLevel": 40,
+        "fadeIn": 3,
+        "fadeOut": 5,
+        "delay": 110,
+        "flag": 0,
+        "sensitivity": 0
+      },
+      "maxLampPower": 95,
+      "dls": {
+        "onLevel": 100,
+        "dimLevel": 30,
+        "fadeIn": 31,
+        "fadeOut": 32,
+        "delay": 33,
+        "flag": 1,
+        "onThreshold": 600,
+        "offThreshold": 200
+      },
+      "selectingBlinking": {
+        "timeOn": 0,
+        "timeOff": 0,
+        "pulses": 0
+      },
+      "warningBlinking": {
+        "timeOn": 0,
+        "timeOff": 0,
+        "pulses": 0
+      },
+      "fixedLevel": 99,
+      "workMode": "SCHD",
+      "dlsSetValue": 200
+    },
+    "factoryParameters": {
+      "dlsEnabled": false,
+      "pirEnabled": true,
+      "lensType": 0,
+      "daliMinLevel": 35,
+      "startDelay": 120,
+      "rtcCalibration": 0,
+      "pirSensitivity": 600,
+      "dlsCalibration": 16384
+    },
+    "schedule": {
+      "SUN": [
+        {"hours": 0, "minutes": 0, "func": "FIX", "level": 50},
+        {"hours": 1, "minutes": 0, "func": "FIX", "level": 50},
+        {"hours": 2, "minutes": 0, "func": "FIX", "level": 50},
+        {"hours": 3, "minutes": 0, "func": "FIX", "level": 50},
+        {"hours": 4, "minutes": 0, "func": "FIX", "level": 50},
+        {"hours": 5, "minutes": 0, "func": "FIX", "level": 50},
+        {"hours": 6, "minutes": 0, "func": "FIX", "level": 50},
+        {"hours": 7, "minutes": 0, "func": "FIX", "level": 50}
+      ],
+      "MON": [
+        {"hours": 0, "minutes": 0, "func": "FIX", "level": 50},
+        {"hours": 1, "minutes": 0, "func": "FIX", "level": 50},
+        {"hours": 2, "minutes": 0, "func": "FIX", "level": 50},
+        {"hours": 3, "minutes": 0, "func": "FIX", "level": 50},
+        {"hours": 4, "minutes": 0, "func": "FIX", "level": 50},
+        {"hours": 5, "minutes": 0, "func": "FIX", "level": 50},
+        {"hours": 6, "minutes": 0, "func": "FIX", "level": 50},
+        {"hours": 7, "minutes": 0, "func": "FIX", "level": 50}
+      ],
+      "TUE": [
+        {"hours": 0, "minutes": 0, "func": "FIX", "level": 50},
+        {"hours": 1, "minutes": 0, "func": "FIX", "level": 50},
+        {"hours": 2, "minutes": 0, "func": "FIX", "level": 50},
+        {"hours": 3, "minutes": 0, "func": "FIX", "level": 50},
+        {"hours": 4, "minutes": 0, "func": "FIX", "level": 50},
+        {"hours": 5, "minutes": 0, "func": "FIX", "level": 50},
+        {"hours": 6, "minutes": 0, "func": "FIX", "level": 50},
+        {"hours": 7, "minutes": 0, "func": "FIX", "level": 50}
+      ],
+      "WED": [
+        {"hours": 0, "minutes": 0, "func": "FIX", "level": 50},
+        {"hours": 1, "minutes": 0, "func": "FIX", "level": 50},
+        {"hours": 2, "minutes": 0, "func": "FIX", "level": 50},
+        {"hours": 3, "minutes": 0, "func": "FIX", "level": 50},
+        {"hours": 4, "minutes": 0, "func": "FIX", "level": 50},
+        {"hours": 5, "minutes": 0, "func": "FIX", "level": 50},
+        {"hours": 6, "minutes": 0, "func": "FIX", "level": 50},
+        {"hours": 7, "minutes": 0, "func": "FIX", "level": 50}
+      ],
+      "THU": [
+        {"hours": 0, "minutes": 0, "func": "FIX", "level": 50},
+        {"hours": 1, "minutes": 0, "func": "FIX", "level": 50},
+        {"hours": 2, "minutes": 0, "func": "FIX", "level": 50},
+        {"hours": 3, "minutes": 0, "func": "FIX", "level": 50},
+        {"hours": 4, "minutes": 0, "func": "FIX", "level": 50},
+        {"hours": 5, "minutes": 0, "func": "FIX", "level": 50},
+        {"hours": 6, "minutes": 0, "func": "FIX", "level": 50},
+        {"hours": 7, "minutes": 0, "func": "FIX", "level": 50}
+      ],
+      "FRI": [
+        {"hours": 0, "minutes": 0, "func": "FIX", "level": 50},
+        {"hours": 1, "minutes": 0, "func": "FIX", "level": 50},
+        {"hours": 2, "minutes": 0, "func": "FIX", "level": 50},
+        {"hours": 3, "minutes": 0, "func": "FIX", "level": 50},
+        {"hours": 4, "minutes": 0, "func": "FIX", "level": 50},
+        {"hours": 5, "minutes": 0, "func": "FIX", "level": 50},
+        {"hours": 6, "minutes": 0, "func": "FIX", "level": 50},
+        {"hours": 7, "minutes": 0, "func": "FIX", "level": 50}
+      ],
+      "SAT": [
+        {"hours": 0, "minutes": 0, "func": "FIX", "level": 50},
+        {"hours": 1, "minutes": 0, "func": "FIX", "level": 50},
+        {"hours": 2, "minutes": 0, "func": "FIX", "level": 50},
+        {"hours": 3, "minutes": 0, "func": "FIX", "level": 50},
+        {"hours": 4, "minutes": 0, "func": "FIX", "level": 50},
+        {"hours": 5, "minutes": 0, "func": "FIX", "level": 50},
+        {"hours": 6, "minutes": 0, "func": "FIX", "level": 50},
+        {"hours": 7, "minutes": 0, "func": "FIX", "level": 50}
+      ],
+      "DAY": [
+        {"hours": 0, "minutes": 0, "func": "FIX", "level": 10},
+        {"hours": 1, "minutes": 2, "func": "FIX", "level": 20},
+        {"hours": 2, "minutes": 4, "func": "FIX", "level": 30},
+        {"hours": 3, "minutes": 6, "func": "FIX", "level": 40},
+        {"hours": 4, "minutes": 8, "func": "FIX", "level": 50},
+        {"hours": 5, "minutes": 10, "func": "FIX", "level": 60},
+        {"hours": 6, "minutes": 25, "func": "FIX", "level": 70},
+        {"hours": 7, "minutes": 59, "func": "FIX", "level": 80}
+      ]
+    }
+  }
+}

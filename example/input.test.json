@@ -1,0 +1,33 @@
+{
+  "config": {
+    "deviceMac": "00:00:00:00:00:00",
+    "devicePin": "0000",
+    "factoryPassword": "000000",
+    "loginHashSeed": 4294967295,
+    "responseTimeout": 500,
+    "btConnectDelay": 10000,
+    "progressInterval": 200,
+    "testerComPort": "COM3",
+    "logging": {
+      "error": true,
+      "conn": true,
+      "txrx": false,
+      "reqres": false
+    }
+  },
+  "test": {
+    "m300": {
+      "leadInTime": 0.1,
+      "fadeInTime": 2,
+      "highLevel": 100,
+      "highTime": 1,
+      "fadeOutTime": 2,
+      "lowLevel": 1,
+      "shutDown": false,
+      "leadOutTime": 0.1
+    },
+    "glp2": {
+
+    }
+  }
+}

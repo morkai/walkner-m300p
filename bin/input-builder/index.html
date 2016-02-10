@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Budowanie konfiguracji Mini300 LED gen2</title>
+  <link rel="stylesheet" href="bootstrap.min.css">
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+<h1>Budowanie konfiguracji Mini300 LED gen2</h1>
+<form id="builder">
+  <button id="submit" tabindex="-1">Buduj konfigurację</button>
+  <h2>Konfiguracja (<code data-ipt="IPT.Data.config">config</code>)</h2>
+  <div class="group">
+    <div class="form-group">
+      <label for="config-deviceMac" class="control-label">Adres MAC urządzenia (<code>.deviceMac</code>)</label>
+      <input id="config-deviceMac" name="config[deviceMac]" class="form-control" type="text" maxlength="17" pattern="^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$" placeholder="00:00:00:00:00:00">
+      <p class="help-block">Adres MAC urządzenia, które będzie programowane i testowane. Pole opcjonalne (najprawdopodobniej zostanie nadpisane zeskanowanym adresem MAC).</p>
+    </div>
+    <div class="form-group">
+      <label for="config-devicePin" class="control-label is-required">PIN urządzenia (<code>.devicePin</code>)</label>
+      <input id="config-devicePin" name="config[devicePin]" class="form-control" type="text" value="0000" required maxlength="4" pattern="^[0-9]{4}$" placeholder="0000">
+      <p class="help-block">4 cyfrowy PIN potrzebny do autoryzacji przy parowaniu urządzenia.</p>
+    </div>
+    <div class="form-group">
+      <label for="config-factoryPassword" class="control-label is-required">Hasło fabryki (<code>.factoryPassword</code>)</label>
+      <input id="config-factoryPassword" name="config[factoryPassword]" class="form-control" type="text" value="000000" required maxlength="6" pattern="^[0-9]{6}$" placeholder="000000">
+      <p class="help-block">6 cyfrowe hasło potrzebne do zalogowania się na poziom fabryki w celu wykonania komendy ustawiającej parametry fabryki.</p>
+    </div>
+    <div class="form-group">
+      <label for="config-loginHashSeed" class="control-label is-required">Ziarno do hasza logowania (<code>.loginHashSeed</code>)</label>
+      <input id="config-loginHashSeed" name="config[loginHashSeed]" class="form-control" type="number" value="4294967295" required min="0" max="4294967295" step="1">
+      <p class="help-block">Ziarno jakie sensor wykorzystuje do wygenerowania hasza Murmur2 z sekretnego klucza pobranego z urządzenia i hasła fabryki podczas logowania.</p>
+    </div>
+    <div class="form-group">
+      <label for="config-testerComPort" class="control-label is-required">Port szeregowy testera (<code>.testerComPort</code>)</label>
+      <input id="config-testerComPort" name="config[testerComPort]" class="form-control" type="text" value="COM1" required>
+      <p class="help-block">Nazwa portu szeregowego, do którego podłączono tester GLP2-I lub adres IP i port usługi serproxy (np. <code>127.0.0.1:5331</code>).</p>
+    </div>
+    <div class="row">
+      <div class="col-lg-4 form-group">
+        <label for="config-responseTimeout" class="control-label is-required">Czas oczekiwania na odpowiedź [ms] (<code>.responseTimeout</code>)</label>
+        <input id="config-responseTimeout" name="config[responseTimeout]" class="form-control" type="number" value="500" required min="100" max="500" step="1">
+        <p class="help-block">Maksymalny czas oczekiwania na odpowiedź od urządzenia po wysłaniu żądania.</p>
+      </div>
+      <div class="col-lg-4 form-group">
+        <label for="config-btConnectDelay" class="control-label is-required">Opóźnienie połączenia Bluetooth [ms] (<code>.btConnectDelay</code>)</label>
+        <input id="config-btConnectDelay" name="config[btConnectDelay]" class="form-control" type="number" value="10000" required min="1" step="1">
+        <p class="help-block">Czas jaki musi upłynąć po wysłaniu rozkazu rozpoczęcia testu funkcjonalnego do testera GLP2-I, zanim rozpocznie się próba nawiązania połączenia Bluetooth.</p>
+      </div>
+      <div class="col-lg-4 form-group">
+        <label for="config-progressInterval" class="control-label is-required">Przedział czasowy zbierania wyników [ms] (<code>.progressInterval</code>)</label>
+        <input id="config-progressInterval" name="config[progressInterval]" class="form-control" type="number" value="200" required min="100" step="1">
+        <p class="help-block">Odstęp czasu odpytywania urządzenia o postęp wykonywania testu. Im mniejsza wartość, tym częściej sensor będzie odpytywany i tym więcej wartości zostanie zebranych i zwróconych jako wynik.</p>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="config-logging" class="control-label">Logi (<code>.logging</code>)</label>
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" name="config[logging][error]" value="true" checked>
+          Dodatkowe informacje o błędzie (<code>.error</code>)
+        </label>
+      </div>
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" name="config[logging][conn]" value="true" checked>
+          Zdarzenia związane z połączeniem (<code>.conn</code>)
+        </label>
+      </div>
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" name="config[logging][txrx]" value="true">
+          Zdarzenia związane z komunikacją (<code>.txrx</code>)
+        </label>
+      </div>
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" name="config[logging][reqres]" value="true">
+          Wysłane żądania i odebrane odpowiedzi (<code>.reqres</code>)
+        </label>
+      </div>
+    </div>
+  </div>
+  <h2><label><input id="program" class="form-group-toggle" type="checkbox" value="1" checked> Programowanie (<code data-ipt="IPT.Data.program">program</code>)</label></h2>
+  <div class="toggleable-form-group group" data-group="program">
+    <h3><label><input id="program-nameAndNumber" class="form-group-toggle" type="checkbox" value="1" checked> Nazwa i numer (<code>.nameAndNumber</code>)</label></h3>
+    <div class="toggleable-form-group group" data-group="program-nameAndNumber">
+      <div class="form-group">
+        <label for="program-nameAndNumber-name" class="control-label">Nazwa lampy (<code>.name</code>)</label>
+        <input id="program-nameAndNumber-name" name="program[nameAndNumber][name]" class="form-control" type="text" value="Mini300 LED gen2" maxlength="30">
+        <p class="help-block">Nazwa lampy. W module Bluetooth widoczne są tylko 24 z maksymalnych 30 znaków (ostatnie 6 znaków to końcówka adresu MAC urządzenia).</p>
+      </div>
+      <div class="form-group">
+        <label for="program-nameAndNumber-number" class="control-label is-required">Numer lampy (<code>.number</code>)</label>
+        <input id="program-nameAndNumber-number" name="program[nameAndNumber][number]" class="form-control" type="number" value="0" required min="0" max="255" step="1" placeholder="0">
+        <p class="help-block">Numer lampy. Aktualnie urządzenie nie wykorzystuje tego pola.</p>
+      </div>
+    </div>
+    <h3><label><input id="program-textInfo" class="form-group-toggle" type="checkbox" value="1" checked> Informacja tekstowa (<code data-ipt=".textInfoSet">.textInfo</code>)</label></h3>
+    <div class="toggleable-form-group group" data-group="program-textInfo">
+      <div class="form-group">
+        <label for="program-textInfo-text" class="control-label">Informacja tekstowa</label>
+        <input id="program-textInfo-text" name="program[textInfo]" class="form-control" type="text" maxlength="240">
+        <p class="help-block">Informacja tekstowa wpisywana do pamięci nieulotnej sensora.</p>
+      </div>
+    </div>
+    <h3><label><input id="program-serialNumber" class="form-group-toggle" type="checkbox" value="1" checked> Numer seryjny (<code>.serialNumber</code>)</label></h3>
+    <div class="toggleable-form-group group" data-group="program-serialNumber">
+      <div class="form-group">
+        <label for="program-serialNumber-text" class="control-label">Numer seryjny sensora</label>
+        <input id="program-serialNumber-text" name="program[serialNumber]" class="form-control" type="text" maxlength="240">
+      </div>
+    </div>
+    <h3><label><input id="program-config" class="form-group-toggle" type="checkbox" value="1" checked> Konfiguracja sensora (<code>.config</code>)</label></h3>
+    <div class="toggleable-form-group group" data-group="program-config">
+      <h4>PIR (<code>.pir</code>)</h4>
+      <div class="group">
+        <div class="form-group">
+          <label for="program-config-pir-onLevel" class="control-label is-required">Poziom świecenia w stanie aktywnym [0,1%] (<code data-ipt=".pirAct">.onLevel</code>)</label>
+          <input id="program-config-pir-onLevel" name="program[config][pir][onLevel]" class="form-control" type="number" value="100" required min="0" max="100" step="0.1">
+        </div>
+        <div class="form-group">
+          <label for="program-config-pir-dimLevel" class="control-label is-required">Poziom świecenia w stanie nieaktywnym [0,1%] (<code data-ipt=".pirNact">.dimLevel</code>)</label>
+          <input id="program-config-pir-dimLevel" name="program[config][pir][dimLevel]" class="form-control" type="number" value="40" required min="0" max="100" step="0.1">
+        </div>
+        <div class="form-group">
+          <label for="program-config-pir-fadeIn" class="control-label is-required">Czas rozjaśniania [0,1s] (<code data-ipt=".pirLightupTime">.fadeIn</code>)</label>
+          <input id="program-config-pir-fadeIn" name="program[config][pir][fadeIn]" class="form-control" type="number" value="3" required min="0" max="6553.5" step="0.1">
+        </div>
+        <div class="form-group">
+          <label for="program-config-pir-fadeOut" class="control-label is-required">Czas wygaszania [0,1s] (<code data-ipt=".pirLightdownTime">.fadeOut</code>)</label>
+          <input id="program-config-pir-fadeOut" name="program[config][pir][fadeOut]" class="form-control" type="number" value="5" required min="0" max="6553.5" step="0.1">
+        </div>
+        <div class="form-group">
+          <label for="program-config-pir-delay" class="control-label is-required">Czas podtrzymania stanu aktywnego [0,1s] (<code data-ipt=".pirHoldTime">.delay</code>)</label>
+          <input id="program-config-pir-delay" name="program[config][pir][delay]" class="form-control" type="number" value="120" required min="0" max="6553.5" step="0.1">
+        </div>
+        <div class="form-group">
+          <label for="program-config-pir-flag" class="control-label is-required">Pole bitowe konfiguracji (<code data-ipt=".pirConfigField">.flag</code>)</label>
+          <input id="program-config-pir-flag" name="program[config][pir][flag]" class="form-control" type="number" value="0" required min="0" max="255" step="1">
+          <p class="help-block">Bit 0 - dozwolone wyłączenie źródła światła.</p>
+        </div>
+        <div class="form-group">
+          <label for="program-config-pir-sensitivity" class="control-label is-required">Czułość (<code data-ipt=".pirSensitive">.sensitivity</code>)</label>
+          <input id="program-config-pir-sensitivity" name="program[config][pir][sensitivity]" class="form-control" type="number" value="0" required min="-127" max="128" step="1">
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="program-config-maxLampPower" class="control-label is-required">Maksymalna moc świecenia lampy [1%] (<code data-ipt=".maxLight">.maxLampPower</code>)</label>
+        <input id="program-config-maxLampPower" name="program[config][maxLampPower]" class="form-control" type="number" value="100" required min="0" max="100" step="1">
+      </div>
+      <h4>DLS (<code>.dls</code>)</h4>
+      <div class="group">
+        <div class="form-group">
+          <label for="program-config-dls-onLevel" class="control-label is-required">Poziom świecenia w stanie aktywnym [0,1%] (<code data-ipt=".dlsAct">.onLevel</code>)</label>
+          <input id="program-config-dls-onLevel" name="program[config][dls][onLevel]" class="form-control" type="number" value="100" required min="0" max="100" step="0.1">
+        </div>
+        <div class="form-group">
+          <label for="program-config-dls-dimLevel" class="control-label is-required">Poziom świecenia w stanie nieaktywnym [0,1%] (<code data-ipt=".dlsNact">.dimLevel</code>)</label>
+          <input id="program-config-dls-dimLevel" name="program[config][dls][dimLevel]" class="form-control" type="number" value="30" required min="0" max="100" step="0.1">
+        </div>
+        <div class="form-group">
+          <label for="program-config-dls-fadeIn" class="control-label is-required">Czas rozjaśniania [0,1s] (<code data-ipt=".dlsLightupTime">.fadeIn</code>)</label>
+          <input id="program-config-dls-fadeIn" name="program[config][dls][fadeIn]" class="form-control" type="number" value="30" required min="0" max="6553.5" step="0.1">
+        </div>
+        <div class="form-group">
+          <label for="program-config-dls-fadeOut" class="control-label is-required">Czas wygaszania [0,1s] (<code data-ipt=".dlsLightdownTime">.fadeOut</code>)</label>
+          <input id="program-config-dls-fadeOut" name="program[config][dls][fadeOut]" class="form-control" type="number" value="30" required min="0" max="6553.5" step="0.1">
+        </div>
+        <div class="form-group">
+          <label for="program-config-dls-delay" class="control-label is-required">Czas podtrzymania stanu aktywnego [0,1s] (<code data-ipt=".dlsHoldTime">.delay</code>)</label>
+          <input id="program-config-dls-delay" name="program[config][dls][delay]" class="form-control" type="number" value="30" required min="0" max="6553.5" step="0.1">
+        </div>
+        <div class="form-group">
+          <label for="program-config-dls-flag" class="control-label is-required">Pole bitowe konfiguracji (<code data-ipt=".dlsConfigField">.flag</code>)</label>
+          <input id="program-config-dls-flag" name="program[config][dls][flag]" class="form-control" type="number" value="1" required min="0" max="255" step="1">
+          <p class="help-block">Bit 0 - dozwolone wyłączenie źródła światła.</p>
+        </div>
+        <div class="form-group">
+          <label for="program-config-dls-onThreshold" class="control-label is-required"> Próg załączania [lx] (<code data-ipt=".dlsOn">.onThreshold</code>)</label>
+          <input id="program-config-dls-onThreshold" name="program[config][dls][onThreshold]" class="form-control" type="number" value="600" required min="0" max="6553.5" step="1">
+        </div>
+        <div class="form-group">
+          <label for="program-config-dls-offThreshold" class="control-label is-required">Próg wyłączania [lx] (<code data-ipt=".dlsOff">.sensitivity</code>)</label>
+          <input id="program-config-dls-offThreshold" name="program[config][dls][offThreshold]" class="form-control" type="number" value="200" required min="0" max="6553.5" step="1">
+        </div>
+      </div>
+      <h4>Mruganie selekcji po utracie komunikacji (<code>.selectingBlinking</code>)</h4>
+      <div class="group">
+        <div class="form-group">
+          <label for="program-config-selectingBlinking-timeOn" class="control-label is-required">Czas ON [0,1s] (<code data-ipt=".blinkingOn">.timeOn</code>)</label>
+          <input id="program-config-selectingBlinking-timeOn" name="program[config][selectingBlinking][timeOn]" class="form-control" type="number" value="0" required min="0" max="25.5" step="0.1">
+        </div>
+        <div class="form-group">
+          <label for="program-config-selectingBlinking-timeOff" class="control-label is-required">Czas OFF [0,1s] (<code data-ipt=".blinkingOff">.timeOff</code>)</label>
+          <input id="program-config-selectingBlinking-timeOff" name="program[config][selectingBlinking][timeOff]" class="form-control" type="number" value="0" required min="0" max="25.5" step="0.1">
+        </div>
+        <div class="form-group">
+          <label for="program-config-selectingBlinking-pulses" class="control-label is-required">Liczba pulsów (<code data-ipt=".blinking">.pulses</code>)</label>
+          <input id="program-config-selectingBlinking-pulses" name="program[config][selectingBlinking][pulses]" class="form-control" type="number" value="0" required min="0" max="255" step="1">
+        </div>
+      </div>
+      <h4>Mruganie ostrzegawcze (<code>.warningBlinking</code>)</h4>
+      <div class="group">
+        <div class="form-group">
+          <label for="program-config-warningBlinking-timeOn" class="control-label is-required">Czas ON [0,1s] (<code data-ipt=".emergencyBlinkingOn">.timeOn</code>)</label>
+          <input id="program-config-warningBlinking-timeOn" name="program[config][warningBlinking][timeOn]" class="form-control" type="number" value="0" required min="0" max="25.5" step="0.1">
+        </div>
+        <div class="form-group">
+          <label for="program-config-warningBlinking-timeOff" class="control-label is-required">Czas OFF [0,1s] (<code data-ipt=".emergencyBlinkingOff">.timeOff</code>)</label>
+          <input id="program-config-warningBlinking-timeOff" name="program[config][warningBlinking][timeOff]" class="form-control" type="number" value="0" required min="0" max="25.5" step="0.1">
+        </div>
+        <div class="form-group">
+          <label for="program-config-warningBlinking-pulses" class="control-label is-required">Liczba pulsów (<code data-ipt=".emergencyBlinking">.pulses</code>)</label>
+          <input id="program-config-warningBlinking-pulses" name="program[config][warningBlinking][pulses]" class="form-control" type="number" value="0" required min="0" max="255" step="1">
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="program-config-fixedLevel" class="control-label is-required">Poziom światła w trybie FIX [0,1%] (<code data-ipt=".lightLevel">.fixedLevel</code>)</label>
+        <input id="program-config-fixedLevel" name="program[config][fixedLevel]" class="form-control" type="number" value="100" required min="0" max="100" step="0.1">
+      </div>
+      <div class="form-group">
+        <label for="program-config-workMode" class="control-label">Tryb pracy (<code>.workMode</code>)</label>
+        <select id="program-config-workMode" name="program[config][workMode]" class="form-control" required>
+          <option value="FIX">0. FIX</option>
+          <option value="PIR">1. PIR</option>
+          <option value="DLS">2. DLS</option>
+          <option value="SCHW">3. Kalendarz tygodniowy</option>
+          <option value="SCHD" selected>4. Kalendarz dzienny</option>
+          <option value="DLS_FOLLOWER">5. DLS regulowany (nadążny)</option>
+          <option value="DLS_PIR">6. DLS+PIR</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="program-config-dlsSetValue" class="control-label is-required">Wartość zadana dla trybu DLS nadążny [lx] (<code data-ipt=".dlsSetValue">.dlsSetValue</code>)</label>
+        <input id="program-config-dlsSetValue" name="program[config][dlsSetValue]" class="form-control" type="number" value="200" required min="0" max="65535" step="1">
+      </div>
+    </div>
+    <h3><label><input id="program-factoryParameters" class="form-group-toggle" type="checkbox" value="1" checked> Parametry fabryczne (<code>.factoryParameters</code>)</label></h3>
+    <div class="toggleable-form-group group" data-group="program-factoryParameters">
+      <div class="form-group">
+        <label for="program-factoryParameters-text" class="control-label">DLS (<code data-ipt=".factoryDlsOn">.dlsEnabled</code>)</label>
+        <br>
+        <label class="radio-inline">
+          <input type="radio" name="program[factoryParameters][dlsEnabled]" value="null">
+          Nie ustawiaj parametru
+        </label>
+        <label class="radio-inline">
+          <input type="radio" name="program[factoryParameters][dlsEnabled]" value="true">
+          Włączony
+        </label>
+        <label class="radio-inline">
+          <input type="radio" name="program[factoryParameters][dlsEnabled]" value="false" checked>
+          Wyłączony
+        </label>
+      </div>
+      <div class="form-group">
+        <label for="program-factoryParameters-text" class="control-label">PIR (<code data-ipt=".factoryPirOn">.pirEnabled</code>)</label>
+        <br>
+        <label class="radio-inline">
+          <input type="radio" name="program[factoryParameters][pirEnabled]" value="null">
+          Nie ustawiaj parametru
+        </label>
+        <label class="radio-inline">
+          <input type="radio" name="program[factoryParameters][pirEnabled]" value="true">
+          Włączony
+        </label>
+        <label class="radio-inline">
+          <input type="radio" name="program[factoryParameters][pirEnabled]" value="false" checked>
+          Wyłączony
+        </label>
+      </div>
+      <div class="form-group">
+        <label for="program-factoryParameters-lensType" class="control-label">Typ soczewki (<code data-ipt=".factoryLensType">.lensType</code>)</label>
+        <input id="program-factoryParameters-lensType" name="program[factoryParameters][lensType]" class="form-control" type="number" value="0" min="0" max="255" step="1">
+      </div>
+      <div class="form-group">
+        <label for="program-factoryParameters-daliMinLevel" class="control-label">DALI min. poziom (typ drivera) (<code data-ipt=".factoryDaliMin">.daliMinLevel</code>)</label>
+        <input id="program-factoryParameters-daliMinLevel" name="program[factoryParameters][daliMinLevel]" class="form-control" type="number" value="31" min="0" max="100" step="1">
+      </div>
+      <div class="form-group">
+        <label for="program-factoryParameters-startDelay" class="control-label">Opóźnienie na starcie [s] (<code data-ipt=".factoryStartDelay">.startDelay</code>)</label>
+        <input id="program-factoryParameters-startDelay" name="program[factoryParameters][startDelay]" class="form-control" type="number" value="120" min="0" max="255" step="1">
+      </div>
+      <div class="form-group">
+        <label for="program-factoryParameters-rtcCalibration" class="control-label">Kalibracja RTC (<code data-ipt=".factoryRtc">.rtcCalibration</code>)</label>
+        <input id="program-factoryParameters-rtcCalibration" name="program[factoryParameters][rtcCalibration]" class="form-control" type="number" value="0" min="0" max="127" step="1">
+      </div>
+      <div class="form-group">
+        <label for="program-factoryParameters-pirSensitivity" class="control-label">Czułość czujnika PIR (<code data-ipt=".factoryPirSensitive">.pirSensitivity</code>)</label>
+        <input id="program-factoryParameters-pirSensitivity" name="program[factoryParameters][pirSensitivity]" class="form-control" type="number" value="0" min="0" max="4095" step="1">
+      </div>
+      <div class="form-group">
+        <label for="program-factoryParameters-dlsCalibration" class="control-label">Kalibracja czujnika DLS (<code data-ipt=".factoryDlsCal">.dlsCalibration</code>)</label>
+        <input id="program-factoryParameters-dlsCalibration" name="program[factoryParameters][dlsCalibration]" class="form-control" type="number" value="" min="0" max="65535" step="1">
+      </div>
+    </div>
+    <h3><label><input id="program-schedule" class="form-group-toggle" type="checkbox" value="1" checked> Kalendarz (<code>.schedule</code>)</label></h3>
+    <div id="schedule" class="toggleable-form-group group" data-group="program-schedule">
+      <h4><label><input id="program-schedule-{DAY_VALUE}" class="form-group-toggle" type="checkbox" value="1" checked> {DAY_NAME} (<code>{DAY_VALUE}</code>)</h4>
+      <div class="toggleable-form-group group" data-group="program-schedule-{DAY_VALUE}">
+        <div class="row">
+          <div class="col-lg-3 form-group">
+            <label for="program-schedule-{DAY_VALUE}-0-hours" class="control-label is-required">Godzina (<code data-ipt=".hour0">.hours</code>)</label>
+            <input id="program-schedule-{DAY_VALUE}-0-hours" name="program[schedule][{DAY_VALUE}][0][hours]" class="form-control" type="number" value="0" required min="0" max="23" step="1">
+          </div>
+          <div class="col-lg-3 form-group">
+            <label for="program-schedule-{DAY_VALUE}-0-minutes" class="control-label is-required">Minuta (<code data-ipt=".minute0">.minutes</code>)</label>
+            <input id="program-schedule-{DAY_VALUE}-0-minutes" name="program[schedule][{DAY_VALUE}][0][minutes]" class="form-control" type="number" value="0" required min="0" max="59" step="1">
+          </div>
+          <div class="col-lg-3 form-group">
+            <label for="program-schedule-{DAY_VALUE}-0-func" class="control-label is-required">Funkcja (<code data-ipt=".function0">.func</code>)</label>
+            <select id="program-schedule-{DAY_VALUE}-0-func" name="program[schedule][{DAY_VALUE}][0][func]" class="form-control">
+              <option value="NULL">0. NULL</option>
+              <option value="PIR">1. PIR</option>
+              <option value="DLS">2. DLS 'stary'</option>
+              <option value="OFF">3. OFF</option>
+              <option value="FIX">4. FIX</option>
+              <option value="DLS_REG">5. DLS nadążny</option>
+            </select>
+          </div>
+          <div class="col-lg-3 form-group">
+            <label for="program-schedule-{DAY_VALUE}-0-level" class="control-label is-required">Poziom świecenia [1%] (<code data-ipt=".level0">.level</code>)</label>
+            <input id="program-schedule-{DAY_VALUE}-0-level" name="program[schedule][{DAY_VALUE}][0][level]" class="form-control" type="number" value="50" required min="0" max="100" step="1">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-3 form-group">
+            <label for="program-schedule-{DAY_VALUE}-1-hours" class="control-label is-required">Godzina (<code data-ipt=".hour1">.hours</code>)</label>
+            <input id="program-schedule-{DAY_VALUE}-1-hours" name="program[schedule][{DAY_VALUE}][1][hours]" class="form-control" type="number" value="0" required min="0" max="23" step="1">
+          </div>
+          <div class="col-lg-3 form-group">
+            <label for="program-schedule-{DAY_VALUE}-1-minutes" class="control-label is-required">Minuta (<code data-ipt=".minute1">.minutes</code>)</label>
+            <input id="program-schedule-{DAY_VALUE}-1-minutes" name="program[schedule][{DAY_VALUE}][1][minutes]" class="form-control" type="number" value="0" required min="0" max="59" step="1">
+          </div>
+          <div class="col-lg-3 form-group">
+            <label for="program-schedule-{DAY_VALUE}-1-func" class="control-label is-required">Funkcja (<code data-ipt=".function1">.func</code>)</label>
+            <select id="program-schedule-{DAY_VALUE}-1-func" name="program[schedule][{DAY_VALUE}][1][func]" class="form-control">
+              <option value="NULL">0. NULL</option>
+              <option value="PIR">1. PIR</option>
+              <option value="DLS">2. DLS 'stary'</option>
+              <option value="OFF">3. OFF</option>
+              <option value="FIX">4. FIX</option>
+              <option value="DLS_REG">5. DLS nadążny</option>
+            </select>
+          </div>
+          <div class="col-lg-3 form-group">
+            <label for="program-schedule-{DAY_VALUE}-1-level" class="control-label is-required">Poziom świecenia [1%] (<code data-ipt=".level1">.level</code>)</label>
+            <input id="program-schedule-{DAY_VALUE}-1-level" name="program[schedule][{DAY_VALUE}][1][level]" class="form-control" type="number" value="50" required min="0" max="100" step="1">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-3 form-group">
+            <label for="program-schedule-{DAY_VALUE}-2-hours" class="control-label is-required">Godzina (<code data-ipt=".hour2">.hours</code>)</label>
+            <input id="program-schedule-{DAY_VALUE}-2-hours" name="program[schedule][{DAY_VALUE}][2][hours]" class="form-control" type="number" value="0" required min="0" max="23" step="1">
+          </div>
+          <div class="col-lg-3 form-group">
+            <label for="program-schedule-{DAY_VALUE}-2-minutes" class="control-label is-required">Minuta (<code data-ipt=".minute2">.minutes</code>)</label>
+            <input id="program-schedule-{DAY_VALUE}-2-minutes" name="program[schedule][{DAY_VALUE}][2][minutes]" class="form-control" type="number" value="0" required min="0" max="59" step="1">
+          </div>
+          <div class="col-lg-3 form-group">
+            <label for="program-schedule-{DAY_VALUE}-2-func" class="control-label is-required">Funkcja (<code data-ipt=".function2">.func</code>)</label>
+            <select id="program-schedule-{DAY_VALUE}-2-func" name="program[schedule][{DAY_VALUE}][2][func]" class="form-control">
+              <option value="NULL">0. NULL</option>
+              <option value="PIR">1. PIR</option>
+              <option value="DLS">2. DLS 'stary'</option>
+              <option value="OFF">3. OFF</option>
+              <option value="FIX">4. FIX</option>
+              <option value="DLS_REG">5. DLS nadążny</option>
+            </select>
+          </div>
+          <div class="col-lg-3 form-group">
+            <label for="program-schedule-{DAY_VALUE}-2-level" class="control-label is-required">Poziom świecenia [1%] (<code data-ipt=".level2">.level</code>)</label>
+            <input id="program-schedule-{DAY_VALUE}-2-level" name="program[schedule][{DAY_VALUE}][2][level]" class="form-control" type="number" value="50" required min="0" max="100" step="1">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-3 form-group">
+            <label for="program-schedule-{DAY_VALUE}-3-hours" class="control-label is-required">Godzina (<code data-ipt=".hour3">.hours</code>)</label>
+            <input id="program-schedule-{DAY_VALUE}-3-hours" name="program[schedule][{DAY_VALUE}][3][hours]" class="form-control" type="number" value="0" required min="0" max="23" step="1">
+          </div>
+          <div class="col-lg-3 form-group">
+            <label for="program-schedule-{DAY_VALUE}-3-minutes" class="control-label is-required">Minuta (<code data-ipt=".minute3">.minutes</code>)</label>
+            <input id="program-schedule-{DAY_VALUE}-3-minutes" name="program[schedule][{DAY_VALUE}][3][minutes]" class="form-control" type="number" value="0" required min="0" max="59" step="1">
+          </div>
+          <div class="col-lg-3 form-group">
+            <label for="program-schedule-{DAY_VALUE}-3-func" class="control-label is-required">Funkcja (<code data-ipt=".function3">.func</code>)</label>
+            <select id="program-schedule-{DAY_VALUE}-3-func" name="program[schedule][{DAY_VALUE}][3][func]" class="form-control">
+              <option value="NULL">0. NULL</option>
+              <option value="PIR">1. PIR</option>
+              <option value="DLS">2. DLS 'stary'</option>
+              <option value="OFF">3. OFF</option>
+              <option value="FIX">4. FIX</option>
+              <option value="DLS_REG">5. DLS nadążny</option>
+            </select>
+          </div>
+          <div class="col-lg-3 form-group">
+            <label for="program-schedule-{DAY_VALUE}-3-level" class="control-label is-required">Poziom świecenia [1%] (<code data-ipt=".level3">.level</code>)</label>
+            <input id="program-schedule-{DAY_VALUE}-3-level" name="program[schedule][{DAY_VALUE}][3][level]" class="form-control" type="number" value="50" required min="0" max="100" step="1">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-3 form-group">
+            <label for="program-schedule-{DAY_VALUE}-4-hours" class="control-label is-required">Godzina (<code data-ipt=".hour4">.hours</code>)</label>
+            <input id="program-schedule-{DAY_VALUE}-4-hours" name="program[schedule][{DAY_VALUE}][4][hours]" class="form-control" type="number" value="0" required min="0" max="23" step="1">
+          </div>
+          <div class="col-lg-3 form-group">
+            <label for="program-schedule-{DAY_VALUE}-4-minutes" class="control-label is-required">Minuta (<code data-ipt=".minute4">.minutes</code>)</label>
+            <input id="program-schedule-{DAY_VALUE}-4-minutes" name="program[schedule][{DAY_VALUE}][4][minutes]" class="form-control" type="number" value="0" required min="0" max="59" step="1">
+          </div>
+          <div class="col-lg-3 form-group">
+            <label for="program-schedule-{DAY_VALUE}-4-func" class="control-label is-required">Funkcja (<code data-ipt=".function4">.func</code>)</label>
+            <select id="program-schedule-{DAY_VALUE}-4-func" name="program[schedule][{DAY_VALUE}][4][func]" class="form-control">
+              <option value="NULL">0. NULL</option>
+              <option value="PIR">1. PIR</option>
+              <option value="DLS">2. DLS 'stary'</option>
+              <option value="OFF">3. OFF</option>
+              <option value="FIX">4. FIX</option>
+              <option value="DLS_REG">5. DLS nadążny</option>
+            </select>
+          </div>
+          <div class="col-lg-3 form-group">
+            <label for="program-schedule-{DAY_VALUE}-4-level" class="control-label is-required">Poziom świecenia [1%] (<code data-ipt=".level4">.level</code>)</label>
+            <input id="program-schedule-{DAY_VALUE}-4-level" name="program[schedule][{DAY_VALUE}][4][level]" class="form-control" type="number" value="50" required min="0" max="100" step="1">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-3 form-group">
+            <label for="program-schedule-{DAY_VALUE}-5-hours" class="control-label is-required">Godzina (<code data-ipt=".hour5">.hours</code>)</label>
+            <input id="program-schedule-{DAY_VALUE}-5-hours" name="program[schedule][{DAY_VALUE}][5][hours]" class="form-control" type="number" value="0" required min="0" max="23" step="1">
+          </div>
+          <div class="col-lg-3 form-group">
+            <label for="program-schedule-{DAY_VALUE}-5-minutes" class="control-label is-required">Minuta (<code data-ipt=".minute5">.minutes</code>)</label>
+            <input id="program-schedule-{DAY_VALUE}-5-minutes" name="program[schedule][{DAY_VALUE}][5][minutes]" class="form-control" type="number" value="0" required min="0" max="59" step="1">
+          </div>
+          <div class="col-lg-3 form-group">
+            <label for="program-schedule-{DAY_VALUE}-5-func" class="control-label is-required">Funkcja (<code data-ipt=".function5">.func</code>)</label>
+            <select id="program-schedule-{DAY_VALUE}-5-func" name="program[schedule][{DAY_VALUE}][5][func]" class="form-control">
+              <option value="NULL">0. NULL</option>
+              <option value="PIR">1. PIR</option>
+              <option value="DLS">2. DLS 'stary'</option>
+              <option value="OFF">3. OFF</option>
+              <option value="FIX">4. FIX</option>
+              <option value="DLS_REG">5. DLS nadążny</option>
+            </select>
+          </div>
+          <div class="col-lg-3 form-group">
+            <label for="program-schedule-{DAY_VALUE}-5-level" class="control-label is-required">Poziom świecenia [1%] (<code data-ipt=".level5">.level</code>)</label>
+            <input id="program-schedule-{DAY_VALUE}-5-level" name="program[schedule][{DAY_VALUE}][5][level]" class="form-control" type="number" value="50" required min="0" max="100" step="1">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-3 form-group">
+            <label for="program-schedule-{DAY_VALUE}-6-hours" class="control-label is-required">Godzina (<code data-ipt=".hour6">.hours</code>)</label>
+            <input id="program-schedule-{DAY_VALUE}-6-hours" name="program[schedule][{DAY_VALUE}][6][hours]" class="form-control" type="number" value="0" required min="0" max="23" step="1">
+          </div>
+          <div class="col-lg-3 form-group">
+            <label for="program-schedule-{DAY_VALUE}-6-minutes" class="control-label is-required">Minuta (<code data-ipt=".minute6">.minutes</code>)</label>
+            <input id="program-schedule-{DAY_VALUE}-6-minutes" name="program[schedule][{DAY_VALUE}][6][minutes]" class="form-control" type="number" value="0" required min="0" max="59" step="1">
+          </div>
+          <div class="col-lg-3 form-group">
+            <label for="program-schedule-{DAY_VALUE}-6-func" class="control-label is-required">Funkcja (<code data-ipt=".function6">.func</code>)</label>
+            <select id="program-schedule-{DAY_VALUE}-6-func" name="program[schedule][{DAY_VALUE}][6][func]" class="form-control">
+              <option value="NULL">0. NULL</option>
+              <option value="PIR">1. PIR</option>
+              <option value="DLS">2. DLS 'stary'</option>
+              <option value="OFF">3. OFF</option>
+              <option value="FIX">4. FIX</option>
+              <option value="DLS_REG">5. DLS nadążny</option>
+            </select>
+          </div>
+          <div class="col-lg-3 form-group">
+            <label for="program-schedule-{DAY_VALUE}-6-level" class="control-label is-required">Poziom świecenia [1%] (<code data-ipt=".level6">.level</code>)</label>
+            <input id="program-schedule-{DAY_VALUE}-6-level" name="program[schedule][{DAY_VALUE}][6][level]" class="form-control" type="number" value="50" required min="0" max="100" step="1">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-3 form-group">
+            <label for="program-schedule-{DAY_VALUE}-7-hours" class="control-label is-required">Godzina (<code data-ipt=".hour7">.hours</code>)</label>
+            <input id="program-schedule-{DAY_VALUE}-7-hours" name="program[schedule][{DAY_VALUE}][7][hours]" class="form-control" type="number" value="0" required min="0" max="23" step="1">
+          </div>
+          <div class="col-lg-3 form-group">
+            <label for="program-schedule-{DAY_VALUE}-7-minutes" class="control-label is-required">Minuta (<code data-ipt=".minute7">.minutes</code>)</label>
+            <input id="program-schedule-{DAY_VALUE}-7-minutes" name="program[schedule][{DAY_VALUE}][7][minutes]" class="form-control" type="number" value="0" required min="0" max="59" step="1">
+          </div>
+          <div class="col-lg-3 form-group">
+            <label for="program-schedule-{DAY_VALUE}-7-func" class="control-label is-required">Funkcja (<code data-ipt=".function7">.func</code>)</label>
+            <select id="program-schedule-{DAY_VALUE}-7-func" name="program[schedule][{DAY_VALUE}][7][func]" class="form-control">
+              <option value="NULL">0. NULL</option>
+              <option value="PIR">1. PIR</option>
+              <option value="DLS">2. DLS 'stary'</option>
+              <option value="OFF">3. OFF</option>
+              <option value="FIX">4. FIX</option>
+              <option value="DLS_REG">5. DLS nadążny</option>
+            </select>
+          </div>
+          <div class="col-lg-3 form-group">
+            <label for="program-schedule-{DAY_VALUE}-7-level" class="control-label is-required">Poziom świecenia [1%] (<code data-ipt=".level7">.level</code>)</label>
+            <input id="program-schedule-{DAY_VALUE}-7-level" name="program[schedule][{DAY_VALUE}][7][level]" class="form-control" type="number" value="50" required min="0" max="100" step="1">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <h2><label><input id="test" class="form-group-toggle" type="checkbox" value="1" checked> Testowanie (<code data-ipt="IPT.Data.test">test</code>)</label></h2>
+  <div class="toggleable-form-group group" data-group="test">
+    <h3>Test Mini300 (<code>.m300</code>)</h3>
+    <div class="toggleable-form-group group" data-group="test-m300">
+      <div class="form-group">
+        <label for="test-m300-leadInTime" class="control-label">Czas do rozpoczęcia symulacji [0,1s] (<code>.leadInTime</code>)</label>
+        <input id="test-m300-leadInTime" name="test[m300][leadInTime]" class="form-control" type="number" value="0.1" required min="0" max="30" step="0.1">
+        <p class="help-block">Do czasu rozpoczęcia dodawane są dodatkowe 2s na mrugnięcie lampy sygnalizujące symulację.</p>
+      </div>
+      <div class="form-group">
+        <label for="test-m300-fadeInTime" class="control-label">Czas rozjaśniania [0,1s] (<code>.fadeInTime</code>)</label>
+        <input id="test-m300-fadeInTime" name="test[m300][fadeInTime]" class="form-control" type="number" value="5" required min="0" max="30" step="0.1">
+      </div>
+      <div class="form-group">
+        <label for="test-m300-highLevel" class="control-label">Poziom maksymalnego świecenia [0,1%] (<code>.highLevel</code>)</label>
+        <input id="test-m300-highLevel" name="test[m300][highLevel]" class="form-control" type="number" value="100" required min="0" max="100" step="0.1">
+      </div>
+      <div class="form-group">
+        <label for="test-m300-highTime" class="control-label">Czas świecenia na maksymalnym poziomie [0,1s] (<code>.highTime</code>)</label>
+        <input id="test-m300-highTime" name="test[m300][highTime]" class="form-control" type="number" value="2" required min="0" max="30" step="0.1">
+      </div>
+      <div class="form-group">
+        <label for="test-m300-fadeOutTime" class="control-label">Czas ściemniania [0,1s] (<code>.fadeOutTime</code>)</label>
+        <input id="test-m300-fadeOutTime" name="test[m300][fadeOutTime]" class="form-control" type="number" value="5" required min="0" max="30" step="0.1">
+      </div>
+      <div class="form-group">
+        <label for="test-m300-lowLevel" class="control-label">Poziom świecenia na minimalnym poziomie [0,1%] (<code>.lowLevel</code>)</label>
+        <input id="test-m300-lowLevel" name="test[m300][lowLevel]" class="form-control" type="number" value="30" required min="0" max="100" step="0.1">
+      </div>
+      <div class="form-group">
+        <label for="test-m300-shutDown" class="control-label">Wyłączenie lampy (<code>.shutDown</code>)</label>
+        <br>
+        <label class="radio-inline">
+          <input type="radio" name="test[m300][shutDown]" value="true">
+          Możliwe
+        </label>
+        <label class="radio-inline">
+          <input type="radio" name="test[m300][shutDown]" value="false" checked>
+          Niemożliwe
+        </label>
+      </div>
+      <div class="form-group">
+        <label for="test-m300-leadOutTime" class="control-label">Czas po zakończeniu symulacji [0,1s] (<code>.leadOutTime</code>)</label>
+        <input id="test-m300-leadOutTime" name="test[m300][leadOutTime]" class="form-control" type="number" value="0.1" required min="0" max="30" step="0.1">
+      </div>
+    </div>
+    <h3>Test GLP2-I (<code>.glp2</code>)</h3>
+    <div class="toggleable-form-group group" data-group="test-glp2">
+      <div class="form-group">
+        <label for="test-glp2-label" class="control-label">Etykieta kroku testowego (<code>.label</code>)</label>
+        <input id="test-glp2-label" name="test[glp2][label]" class="form-control" type="text" value="" placeholder="M300P">
+        <p class="help-block">Etykieta kroku testowego wyświetlana na panelu testera.</p>
+      </div>
+      <div class="row">
+        <div class="col-lg-3 form-group">
+          <label for="test-glp2-startTime" class="control-label">Czas startu [s] (<code>.startTime</code>)</label>
+          <input id="test-glp2-startTime" name="test[glp2][startTime]" class="form-control" type="number" value="" min="0" step="0.1" placeholder="1800">
+        </div>
+        <div class="col-lg-3 form-group">
+          <label for="test-glp2-duration" class="control-label">Czas badania [s] (<code>.duration</code>)</label>
+          <input id="test-glp2-duration" name="test[glp2][duration]" class="form-control" type="number" value="" min="0.1" step="0.1" placeholder="1800">
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="test-glp2-mode" class="control-label is-required">Tryb badania (<code>.mode</code>)</label>
+        <select id="test-glp2-mode" class="form-control" name="test[glp2][mode]" required>
+          <option value="0" data-min="0.01" data-max="64" data-step="0.01" data-label="Natężenie prądu [A]">Test poboru prądu</option>
+          <option value="1" data-min="1" data-max="15000" data-step="0.1" data-label="Moc pozorna [W]">Test mocy pozornej</option>
+          <option value="2" data-min="1" data-max="15000" data-step="0.1" data-label="Moc [W]" selected>Test mocy</option>
+          <option value="3" data-min="0.01" data-max="1" data-step="0.01" data-label="cosφ">Test cosφ</option>
+          <option value="5" data-label="Wartość nastawy">Test wizualny</option>
+          <option value="6" data-min="20" data-max="300" data-step="1" data-label="Napięcie resztkowe [V]">Test napięcia resztkowego</option>
+        </select>
+      </div>
+      <div class="row">
+        <div class="col-lg-3 form-group">
+          <label for="test-glp2-setValue" class="control-label"><span id="test-glp2-setValue-label">Moc [W]</span> (<code>.setValue</code>)</label>
+          <input id="test-glp2-setValue" name="test[glp2][setValue]" class="form-control" type="number" value="1" min="1" max="15000" step="0.1">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-3 form-group">
+          <label for="test-glp2-lowerToleranceRel" class="control-label is-required">Dolna granica [%] (<code>.lowerToleranceRel</code>)</label>
+          <input id="test-glp2-lowerToleranceRel" name="test[glp2][lowerToleranceRel]" class="form-control" type="number" value="100" required min="0" max="100" step="1">
+        </div>
+        <div class="col-lg-3 form-group">
+          <label for="test-glp2-upperToleranceRel" class="control-label is-required">Górna granica [%] (<code>.upperToleranceRel</code>)</label>
+          <input id="test-glp2-upperToleranceRel" name="test[glp2][upperToleranceRel]" class="form-control" type="number" value="100" required min="0" max="100" step="1">
+        </div>
+        <div class="col-lg-3 form-group">
+          <label for="test-glp2-lowerToleranceAbs" class="control-label is-required">Dolna granica <span class="test-glp2-unit">[W]</span> (<code>.lowerToleranceAbs</code>)</label>
+          <input id="test-glp2-lowerToleranceAbs" name="test[glp2][lowerToleranceAbs]" class="form-control" type="number" value="0" required min="0" step="0.1">
+        </div>
+        <div class="col-lg-3 form-group">
+          <label for="test-glp2-upperToleranceAbs" class="control-label is-required">Górna granica <span class="test-glp2-unit">[W]</span> (<code>.upperToleranceAbs</code>)</label>
+          <input id="test-glp2-upperToleranceAbs" name="test[glp2][upperToleranceAbs]" class="form-control" type="number" value="0" required min="0" step="0.1">
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+<div id="result-container">
+  <div class="btn-group">
+    <button type="button" class="btn btn-default active result-type" value="ipt">IPT</button>
+    <button type="button" class="btn btn-default result-type" value="m300p">M300P</button>
+  </div>
+  <textarea id="result" class="form-control"></textarea>
+</div>
+<script src="jquery.min.js"></script>
+<script src="jquery.serialize-object.min.js"></script>
+<script src="index.js"></script>
+</body>
+</html>

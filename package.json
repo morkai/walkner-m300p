@@ -1,0 +1,34 @@
+{
+  "private": true,
+  "name": "walkner-m300p",
+  "version": "1.0.0",
+  "description": "Mini300 LED gen2 sensor programmer and tester.",
+  "license": "CC BY-NC-SA 4.0",
+  "homepage": "https://github.com/morkai/walkner-m300p",
+  "author": {
+    "name": "Łukasz Walukiewicz",
+    "email": "lukasz@miracle.systems",
+    "url": "http://miracle.systems/"
+  },
+  "bugs": "https://github.com/morkai/walkner-m300p/issues",
+  "repository": {
+    "type": "git",
+    "url":  "http://github.com/morkai/walkner-m300p.git"
+  },
+  "engines": ["node >=4.x.x"],
+  "main": "./lib/index.js",
+  "dependencies": {
+    "h5.step": "0.x.x",
+    "h5.buffers": "0.x.x",
+    "bluetooth-serial-port": "1.x.x",
+    "murmur-hash-js": "1.x.x",
+    "serialport": "2.x.x",
+    "glp2": "morkai/node-glp2#b33966e"
+  },
+  "devDependencies": {
+
+  },
+  "scripts": {
+
+  }
+}
