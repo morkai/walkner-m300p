@@ -1,3 +1,8 @@
+1.2.0 @ 2018-05-15
+==================
+
+  * Added a new config property: `btConnectTryCount`.
+
 1.1.0 @ 2016-02-10
 ==================
 
