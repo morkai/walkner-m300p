@@ -39,6 +39,7 @@ See the `example/` directory or open the input builder (`bin/input-builder/index
 * `.responseTimeout` - maximum time in ms to wait for a response from the sensor.
 * `.btConnectDelay` - time to wait after starting the functional test on the GLP2-I tester before connecting
   to the sensor.
+* `.btConnectTryCount` - maximum number of times to retry to establish a Bluetooth connection.
 * `.progressInterval` - minimum time between collection of the testing progress. The progress interval is increased
   by the time it takes to execute two requests to the sensor (`getStatus` and `getProgress`).
 * `.logging` - determines how much logging information is produced:

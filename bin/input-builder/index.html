@@ -38,17 +38,22 @@
       <p class="help-block">Nazwa portu szeregowego, do którego podłączono tester GLP2-I lub adres IP i port usługi serproxy (np. <code>127.0.0.1:5331</code>).</p>
     </div>
     <div class="row">
-      <div class="col-lg-4 form-group">
+      <div class="col-lg-3 form-group">
         <label for="config-responseTimeout" class="control-label is-required">Czas oczekiwania na odpowiedź [ms] (<code>.responseTimeout</code>)</label>
         <input id="config-responseTimeout" name="config[responseTimeout]" class="form-control" type="number" value="500" required min="100" max="500" step="1">
         <p class="help-block">Maksymalny czas oczekiwania na odpowiedź od urządzenia po wysłaniu żądania.</p>
       </div>
-      <div class="col-lg-4 form-group">
+      <div class="col-lg-3 form-group">
         <label for="config-btConnectDelay" class="control-label is-required">Opóźnienie połączenia Bluetooth [ms] (<code>.btConnectDelay</code>)</label>
         <input id="config-btConnectDelay" name="config[btConnectDelay]" class="form-control" type="number" value="10000" required min="1" step="1">
         <p class="help-block">Czas jaki musi upłynąć po wysłaniu rozkazu rozpoczęcia testu funkcjonalnego do testera GLP2-I, zanim rozpocznie się próba nawiązania połączenia Bluetooth.</p>
       </div>
-      <div class="col-lg-4 form-group">
+      <div class="col-lg-3 form-group">
+        <label for="config-btConnectTryCount" class="control-label is-required">Ilość prób połączeń Bluetooth (<code>.btConnectTryCount</code>)</label>
+        <input id="config-btConnectTryCount" name="config[btConnectTryCount]" class="form-control" type="number" value="1" required min="1" step="1">
+        <p class="help-block">Maksymalna ilość prób nawiązywania połączenia Bluetooth.</p>
+      </div>
+      <div class="col-lg-3 form-group">
         <label for="config-progressInterval" class="control-label is-required">Przedział czasowy zbierania wyników [ms] (<code>.progressInterval</code>)</label>
         <input id="config-progressInterval" name="config[progressInterval]" class="form-control" type="number" value="200" required min="100" step="1">
         <p class="help-block">Odstęp czasu odpytywania urządzenia o postęp wykonywania testu. Im mniejsza wartość, tym częściej sensor będzie odpytywany i tym więcej wartości zostanie zebranych i zwróconych jako wynik.</p>
