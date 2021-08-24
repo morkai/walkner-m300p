@@ -6,6 +6,9 @@
     "loginHashSeed": 4294967295,
     "responseTimeout": 500,
     "btConnectDelay": 10000,
+    "btConnectTryCount": 5,
+    "btRequestDelay": 200,
+    "btRequestRetryCount": 3,
     "progressInterval": 200,
     "logging": {
       "error": true,

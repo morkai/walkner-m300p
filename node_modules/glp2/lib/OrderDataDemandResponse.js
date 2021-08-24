@@ -1,0 +1,37 @@
+// Copyright (c) 2015, Łukasz Walukiewicz <lukasz@miracle.systems>.
+// Licensed under the MIT License <http://opensource.org/licenses/MIT>.
+// Part of the node-glp2 project <http://miracle.systems/p/node-glp2>.
+
+'use strict';
+
+var util = require('./util');
+var constants = require('./constants');
+var Response = require('./Response');
+
+module.exports = OrderDataDemandResponse;
+
+/**
+ * @constructor
+ * @extends {Response}
+ * @param {Array.<string>} orderData
+ */
+function OrderDataDemandResponse(orderData)
+{
+  Response.call(this, constants.ResponseType.ORDER_DATA_DEMAND);
+
+  /**
+   * @type {Array.<string>}
+   */
+  this.orderData = orderData;
+}
+
+util.inherits(OrderDataDemandResponse, Response);
+
+/**
+ * @param {Buffer} responseBuffer
+ * @returns {OrderDataDemandResponse}
+ */
+OrderDataDemandResponse.fromResponseBuffer = function(responseBuffer)
+{
+  return new OrderDataDemandResponse(util.decodeResponseBuffer(responseBuffer).map(util.decodeStringValue));
+};
