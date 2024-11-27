@@ -15,14 +15,16 @@
     "type": "git",
     "url":  "http://github.com/morkai/walkner-m300p.git"
   },
-  "engines": ["node 5.x.x"],
+  "engines": {
+    "node": "18.20.2"
+  },
   "main": "./lib/index.js",
   "dependencies": {
     "h5.step": "0.x.x",
     "h5.buffers": "0.x.x",
-    "bluetooth-serial-port": "1.x.x",
-    "murmur-hash-js": "1.x.x",
-    "serialport": "2.x.x",
+    "bluetooth-serial-port": "3.0.2",
+    "murmur-hash-js": "1.0.0",
+    "serialport": "12.0.0",
     "glp2": "morkai/node-glp2"
   },
   "devDependencies": {

@@ -6,7 +6,7 @@ Mini300 LED gen2 sensor programmer and tester.
 
 ### node.js
 
-  * __Version__: 5
+  * __Version__: 18
   * __Website__: https://nodejs.org/
   * __Download__: https://nodejs.org/download/
 
