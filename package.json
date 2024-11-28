@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "walkner-m300p",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Mini300 LED gen2 sensor programmer and tester.",
   "license": "CC BY-NC-SA 4.0",
   "homepage": "https://github.com/morkai/walkner-m300p",

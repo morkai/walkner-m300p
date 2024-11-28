@@ -1,3 +1,11 @@
+1.4.0 @ 2024-11-28
+==================
+
+* Fixed 'Get Actual Values' request failing with an invalid response error if the current response
+  buffer contains only a single `ACK` byte.
+* Changed the GLP2 baud rate from 9600 to 19200.
+* Updated Node.js from v5 to v18.
+
 1.3.0 @ 2021-08-24
 ==================
 
